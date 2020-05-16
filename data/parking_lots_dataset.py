@@ -1,6 +1,7 @@
 import torch
+import cv2
 
-from skimage import io, transform
+from skimage import transform
 from torch.utils.data import Dataset
 from typing import List
 
@@ -18,9 +19,13 @@ class ParkingLotsDataset(Dataset):
         if torch.is_tensor(index):
             index = index.tolist()
 
-        image = io.imread(self.image_paths[index])
+        image = cv2.imread(self.image_paths[index])
+        if image is None:
+            raise FileNotFoundError(f'File {self.image_paths[index]} is not found')
+
         sample = {
             'image': transform.resize(image, (128, 128), anti_aliasing=True, mode='reflect'),
+            'image_path': self.image_paths[index],
             'label': self.classes[index]
         }
         if self.transform:

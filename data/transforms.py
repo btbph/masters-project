@@ -29,9 +29,5 @@ class Rescale:
 
 class ToTensor:
     def __call__(self, sample):
-        image, label = sample['image'], sample['label']
-        image = image.transpose((2, 0, 1))
-        return {
-            'image': image,
-            'label': label
-        }
+        sample['image'] = sample['image'].transpose((2, 0, 1))
+        return sample
